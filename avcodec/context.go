@@ -3,8 +3,11 @@
 
 package avcodec
 
-//#cgo pkg-config: libavcodec
-//#include <libavcodec/avcodec.h>
+/*
+#cgo pkg-config: libavcodec
+#include <libavcodec/avcodec.h>
+#include <stdlib.h>
+*/
 import "C"
 import (
 	"unsafe"
@@ -200,4 +203,28 @@ func (ctxt *Context) AvcodecSendPacket(packet *Packet) int {
 
 func (ctxt *Context) AvcodecReceiveFrame(frame *Frame) int {
 	return (int)(C.avcodec_receive_frame((*C.struct_AVCodecContext)(ctxt), (*C.struct_AVFrame)(frame)))
+}
+
+func (ctxt *Context) SetHWDeviceCtx(hw_device_ctx *AvBufferRef) {
+	ctxt.hw_device_ctx = (*C.struct_AVBufferRef)(unsafe.Pointer(hw_device_ctx))
+}
+
+func (ctxt *Context) SetHWDevicePixFmt(pixFmt PixelFormat) {
+	ctxt.pix_fmt = C.enum_AVPixelFormat(pixFmt)
+}
+
+func (ctxt *Context) SetHwFrameCtx(ref *AvBufferRef) {
+	ctxt.hw_frames_ctx = (*C.struct_AVBufferRef)(unsafe.Pointer(ref))
+}
+
+func (ctxt *Context) HWFramesCtx() *AvBufferRef {
+	return (*AvBufferRef)(unsafe.Pointer(ctxt.hw_frames_ctx))
+}
+
+func AVHwFrameCtxInit(ref *AvBufferRef) int {
+	return (int)(C.av_hwframe_ctx_init((*C.struct_AVBufferRef)(ref)))
+}
+
+func AVHwFrameCtxAlloc(device_ctx *AvBufferRef) *AvBufferRef {
+	return (*AvBufferRef)(C.av_hwframe_ctx_alloc((*C.struct_AVBufferRef)(device_ctx)))
 }

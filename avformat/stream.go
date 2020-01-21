@@ -8,6 +8,7 @@ package avformat
 import "C"
 import (
 	"github.com/giorgisio/goav/avcodec"
+	"unsafe"
 )
 
 //Rational av_stream_get_r_frame_rate (const Stream *s)
@@ -44,4 +45,9 @@ func (s *Stream) AvStreamGetParser() *CodecParserContext {
 //Returns the pts of the last muxed packet + its duration.
 func (s *Stream) AvStreamGetEndPts() int64 {
 	return int64(C.av_stream_get_end_pts((*C.struct_AVStream)(s)))
+}
+
+func AvCodecParametersToContext(ctx *CodecContext, stream *Stream) int {
+	cstream := (*C.struct_AVStream)(unsafe.Pointer(stream))
+	return int(C.avcodec_parameters_to_context((*C.struct_AVCodecContext)(unsafe.Pointer(ctx)), (*C.struct_AVCodecParameters)(unsafe.Pointer(cstream.codecpar))))
 }

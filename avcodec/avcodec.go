@@ -81,6 +81,12 @@ func (cp *AvCodecParameters) AvCodecGetSampleRate() int {
 	return *((*int)(unsafe.Pointer(&cp.sample_rate)))
 }
 
+func (cp *AvCodecParameters) AvCodecGetExtraData() []byte {
+	var data []byte
+	data = C.GoBytes(unsafe.Pointer(cp.extradata), cp.extradata_size)
+	return data
+}
+
 func (c *Codec) AvCodecGetMaxLowres() int {
 	return int(C.av_codec_get_max_lowres((*C.struct_AVCodec)(c)))
 }

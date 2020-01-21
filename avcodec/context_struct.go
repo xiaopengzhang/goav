@@ -546,3 +546,7 @@ func (ctxt *Context) SkipIdct() AvDiscard {
 func (ctxt *Context) SkipLoopFilter() AvDiscard {
 	return (AvDiscard)(ctxt.skip_loop_filter)
 }
+
+func (ctxt *Context) SwPixFmt() PixelFormat {
+	return (PixelFormat)(ctxt.sw_pix_fmt)
+}
